@@ -92,6 +92,9 @@ _is_cuda = is_cuda()
 _is_cpu = is_cpu()
 _is_cpu_amx_available = cpu_has_amx_support()
 
+if _is_cuda:
+    from sglang.jit_kernel.moe import fused_share_gate_sigmoid_mul
+
 
 class Qwen2MoeMLP(nn.Module):
     def __init__(
@@ -247,6 +250,12 @@ class Qwen2MoeSparseMoeBlock(nn.Module):
                         self.shared_expert_gate.weight,
                         self.shared_expert_gate.bias,
                         True,
+                        shared_output,
+                    )
+                elif _is_cuda and self.shared_expert_gate.bias is None:
+                    shared_output = fused_share_gate_sigmoid_mul(
+                        hidden_states,
+                        self.shared_expert_gate.weight,
                         shared_output,
                     )
                 else:
