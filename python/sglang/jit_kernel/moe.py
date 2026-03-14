@@ -31,7 +31,7 @@ def fused_share_gate_sigmoid_mul(
     share_gate_weight: torch.Tensor,
     share_expert_output: torch.Tensor,
     output: Optional[torch.Tensor] = None,
-) -> None:
+) -> torch.Tensor:
     assert hidden_state.size(1) % 8 == 0
     module = _jit_fused_share_gate_sigmoid_mul_module(share_expert_output.dtype)
     if output is None:

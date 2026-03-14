@@ -6,7 +6,7 @@ def jit_fused_share_gate_sigmoid_mul(
     hidden_state,
     share_gate_weight,
     share_expert_output,
-) -> None:
+) -> torch.Tensor:
     from sglang.jit_kernel.moe import fused_share_gate_sigmoid_mul
     output = fused_share_gate_sigmoid_mul(hidden_state, share_gate_weight, share_expert_output)
     return output
@@ -17,7 +17,7 @@ def ref_fused_share_gate_sigmoid_mul(
     hidden_state,
     share_gate_weight,
     share_expert_output,
-):
+) -> torch.Tensor:
     import torch.nn.functional as F
     share_expert_gate = torch.nn.Linear(share_gate_weight.shape[-1], 1, bias=False)
     share_expert_gate.weight = torch.nn.Parameter(share_gate_weight)
