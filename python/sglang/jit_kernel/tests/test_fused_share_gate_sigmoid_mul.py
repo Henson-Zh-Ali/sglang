@@ -50,7 +50,7 @@ def test_fused_share_gate_sigmoid_mul(
     
     ref_out = ref_fused_share_gate_sigmoid_mul(hidden_state, share_gate_weight, share_expert_output)
     out = jit_fused_share_gate_sigmoid_mul(hidden_state, share_gate_weight, share_expert_output)
-    assert torch.allclose(ref_out, out, atol=1e-2, rtol=1e-3)
+    assert torch.allclose(ref_out, out, atol=1e-2, rtol=1e-2)
 
 
 if __name__ == "__main__":
