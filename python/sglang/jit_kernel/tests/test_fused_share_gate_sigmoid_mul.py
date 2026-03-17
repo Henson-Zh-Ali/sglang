@@ -27,7 +27,8 @@ def ref_fused_share_gate_sigmoid_mul(
     return x
 
 
-BS_LIST = [1, 7, 110, 1024, 4096, 65535]
+BS_LIST = [2**n for n in range(0, 16)]
+BS_LIST += [x + 1 + i for i, x in enumerate(BS_LIST)]
 HIDDEN_SIZE_LIST = [1024, 2048, 4096]
 DEVICE_LIST = ["cuda", ]
 DTYPE_LIST = [torch.bfloat16, torch.half]
@@ -49,7 +50,7 @@ def test_fused_share_gate_sigmoid_mul(
     
     ref_out = ref_fused_share_gate_sigmoid_mul(hidden_state, share_gate_weight, share_expert_output)
     out = jit_fused_share_gate_sigmoid_mul(hidden_state, share_gate_weight, share_expert_output)
-    assert torch.allclose(ref_out, out, atol=5e-2, rtol=5e-3)
+    assert torch.allclose(ref_out, out, atol=1e-2, rtol=1e-3)
 
 
 if __name__ == "__main__":

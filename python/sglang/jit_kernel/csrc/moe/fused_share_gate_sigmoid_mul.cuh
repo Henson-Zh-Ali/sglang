@@ -60,7 +60,6 @@ __global__ void fused_share_gate_sigmoid_mul_kernel(
     }
   }
   gate_value = warp::reduce_sum(gate_value);
-  gate_value = __shfl_sync(0xffffffff, gate_value, 0);
   auto sigmoid_gate_value = fast_sigmoid(gate_value);
  
   // Compute output
