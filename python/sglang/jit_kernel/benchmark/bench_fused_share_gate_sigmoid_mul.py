@@ -15,10 +15,7 @@ from sglang.jit_kernel.moe import fused_share_gate_sigmoid_mul
 
 
 def jit_fused_share_gate_sigmoid_mul(
-    hidden_state,
-    share_gate_weight,
-    share_expert_output,
-    **kwargs
+    hidden_state, share_gate_weight, share_expert_output, **kwargs
 ) -> torch.Tensor:
     output = fused_share_gate_sigmoid_mul(
         hidden_state, share_gate_weight, share_expert_output
@@ -28,10 +25,7 @@ def jit_fused_share_gate_sigmoid_mul(
 
 @torch.inference_mode()
 def torch_share_gate_sigmoid_mul(
-    hidden_state,
-    share_gate,
-    share_expert_output,
-    **kwargs
+    hidden_state, share_gate, share_expert_output, **kwargs
 ) -> torch.Tensor:
     x = share_gate(hidden_state)
     x = F.sigmoid(x)
@@ -44,13 +38,28 @@ BS_LIST = get_benchmark_range(
     ci_range=[16],
 )
 HIDDEN_SIZE_LIST = get_benchmark_range(
-    full_range=[1024, 1536, 2048, ],
-    ci_range=[1024, ],
+    full_range=[
+        1024,
+        1536,
+        2048,
+    ],
+    ci_range=[
+        1024,
+    ],
 )
 
-LINE_VALS = ["torch", "jit", ]
-LINE_NAMES = ["PyTorch", "SGL JIT Kernel", ]
-STYLES = [("orange", "-"), ("blue", "--"), ]
+LINE_VALS = [
+    "torch",
+    "jit",
+]
+LINE_NAMES = [
+    "PyTorch",
+    "SGL JIT Kernel",
+]
+STYLES = [
+    ("orange", "-"),
+    ("blue", "--"),
+]
 
 configs = list(itertools.product(HIDDEN_SIZE_LIST, BS_LIST))
 
@@ -68,8 +77,6 @@ configs = list(itertools.product(HIDDEN_SIZE_LIST, BS_LIST))
         args={},
     )
 )
-
-
 def benchmark(hidden_size: int, batch_size: int, provider: str):
     hidden_state = torch.randn(
         (batch_size, hidden_size), dtype=DEFAULT_DTYPE, device=DEFAULT_DEVICE
